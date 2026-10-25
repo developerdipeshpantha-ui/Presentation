@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>King Prithvi Narayan Shah - Classroom Presentation (Dipesh)</title>
+  <meta name="description" content="Engaging, interactive classroom presentation on King Prithvi Narayan Shah presented by Dipesh, Shree Nirmal Secondary School, Tanahun.">
+  
+  <!-- Google Fonts: Outfit & Cinzel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Presentation Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Ambient Glowing Pastel Orbs -->
+  <div class="ambient-glow-orb orb-1"></div>
+  <div class="ambient-glow-orb orb-2"></div>
+
+  <!-- Touch TV Laser Pointer Dot -->
+  <div id="laserPointerDot"></div>
+
+  <!-- Drawing & Whiteboard Canvas -->
+  <canvas id="annotationCanvas"></canvas>
+
+  <!-- Celebration Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- =======================================================
+       RIGHT-HAND SIDE COLLAPSIBLE TOOLS (TOUCH TV OPTIMIZED)
+       ======================================================= -->
+  <!-- Floating Right Edge Toggle Tab -->
+  <button class="right-tools-toggle-tab" id="rightToolsToggleTab" title="Toggle Presentation Tools">
+    <span class="tools-tab-icon" id="rightTabIcon">❮</span>
+    <span class="tools-tab-text">TOOLS</span>
+  </button>
+
+  <!-- Right-Hand Side Collapsible Tools Drawer -->
+  <aside class="right-tools-drawer" id="rightToolsDrawer">
+    <div class="drawer-header">
+      <span class="drawer-title">🛠️ TV Tools</span>
+      <button class="drawer-close-btn" id="closeRightDrawerBtn">✕</button>
+    </div>
+
+    <!-- Stopwatch / Presentation Timer -->
+    <div class="drawer-timer-box">
+      <div class="drawer-timer-time" id="drawerTimerDisplay">00:00</div>
+      <div class="drawer-timer-actions">
+        <button class="timer-btn" id="drawerTimerToggleBtn">▶️ Start</button>
+        <button class="timer-btn" id="drawerTimerResetBtn">🔄 Reset</button>
+      </div>
+    </div>
+
+    <!-- Tools Action Grid -->
+    <div class="drawer-tools-grid">
+      <!-- Fullscreen / Exit Fullscreen -->
+      <button class="drawer-tool-btn" id="drawerFsBtn">
+        ⛶ <span>Fullscreen</span>
+      </button>
+
+      <!-- Whiteboard Pen -->
+      <button class="drawer-tool-btn" id="drawerPenBtn">
+        ✏️ <span>Whiteboard Pen</span>
+      </button>
+
+      <!-- Laser Pointer -->
+      <button class="drawer-tool-btn" id="drawerLaserBtn">
+        🔦 <span>Touch Laser</span>
+      </button>
+
+      <!-- Speaker Notes -->
+      <button class="drawer-tool-btn" id="drawerNotesBtn">
+        📝 <span>Speaker Notes</span>
+      </button>
+
+      <!-- Slide Jump Grid -->
+      <button class="drawer-tool-btn" id="drawerGridBtn">
+        🗺️ <span>Jump to Slide</span>
+      </button>
+
+      <!-- Sound Toggle -->
+      <button class="drawer-tool-btn tool-active" id="drawerSoundBtn">
+        🔊 <span>Sound: ON</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Pen Floating Color Palette (Prominent, Exitable, Never Stuck) -->
+  <div class="pen-floating-palette hidden" id="penFloatingPalette">
+    <span class="pen-mode-title">✏️ Pen:</span>
+    <div class="pen-color-dot active" data-color="#EC4899" style="background: #EC4899;" onclick="window.canvasApp.setColor('#EC4899')" title="Pink"></div>
+    <div class="pen-color-dot" data-color="#8B5CF6" style="background: #8B5CF6;" onclick="window.canvasApp.setColor('#8B5CF6')" title="Purple"></div>
+    <div class="pen-color-dot" data-color="#F59E0B" style="background: #F59E0B;" onclick="window.canvasApp.setColor('#F59E0B')" title="Gold"></div>
+    <div class="pen-color-dot" data-color="#10B981" style="background: #10B981;" onclick="window.canvasApp.setColor('#10B981')" title="Green"></div>
+    <button class="pen-action-btn" onclick="window.canvasApp.setEraser()" title="Eraser Tool">🧹 Eraser</button>
+    <button class="pen-action-btn" onclick="window.canvasApp.clear()" title="Clear Canvas">🗑️ Clear</button>
+    <!-- Big Prominent Exit Button -->
+    <button class="pen-action-btn pen-exit-btn" onclick="window.canvasApp.exitPen()" title="Exit Pen Mode">
+      ✅ Done Drawing
+    </button>
+  </div>
+
+  <!-- Speaker Notes Drawer (FIXED OFF-CANVAS: NEVER INLINE AT TOP!) -->
+  <aside class="speaker-notes-drawer" id="speakerNotesDrawer">
+    <div class="notes-drawer-header">
+      <div class="notes-drawer-title">
+        <span>🎤 Presenter Cheat Sheet</span>
+      </div>
+      <button class="close-drawer-btn" id="closeNotesDrawerBtn">✕</button>
+    </div>
+    <div id="speakerNotesContent">
+      <!-- Dynamically filled with simple speech scripts for the student -->
+    </div>
+  </aside>
+
+  <!-- Deep-Dive Modal with DIRECT KEY-VALUE GRID (NO TEXT WALLS!) -->
+  <div class="deep-dive-overlay hidden" id="deepDiveStoryModal">
+    <div class="deep-dive-card" id="deepDiveCard">
+      <div class="deep-dive-header">
+        <div>
+          <h2 class="deep-dive-title" id="deepDiveTitle">Title</h2>
+          <div class="deep-dive-subtitle" id="deepDiveSubtitle">Subtitle</div>
+        </div>
+        <button class="close-drawer-btn" id="closeDeepDiveBtn">✕</button>
+      </div>
+
+      <!-- Real Historical Photograph Banner -->
+      <img src="" id="deepDiveImagePreview" class="deep-dive-img-banner" alt="Historical Preview">
+
+      <!-- Direct Key-Value Grid: RULED BY: ### / LOCATION: ### -->
+      <div id="deepDiveDetailsContainer"></div>
+
+      <div class="deep-dive-takeaway" id="deepDiveTakeaway"></div>
+    </div>
+  </div>
+
+  <!-- Slide Overview Grid Modal -->
+  <div class="modal-overlay hidden" id="slideOverviewModal">
+    <div class="overview-modal-card">
+      <div class="overview-modal-header">
+        <h2>🗺️ Jump to Any Slide</h2>
+        <button class="close-drawer-btn" id="closeOverviewModalBtn">✕</button>
+      </div>
+      <div class="overview-grid" id="overviewSlidesGrid"></div>
+    </div>
+  </div>
+
+  <!-- Main Presentation Viewport -->
+  <main class="presentation-viewport">
+    <div class="presentation-container" id="presentationContainer">
+
+      <!-- ==========================================
+           SLIDE 0: SELF INTRODUCTION (DIPESH'S ABOUT.ME EMBED CARD)
+           ========================================== -->
+      <section class="slide-card glassmorphism active" id="slide-0">
+        <div class="self-intro-card">
+          <div>
+            <div class="hero-pill-tag">
+              <span>🌸</span>
+              <span>English Presentation • Class 10</span>
+            </div>
+            
+            <h1 class="self-intro-heading">
+              SELF<br>
+              <span>INTRODUCTION</span>
+            </h1>
+
+            <div class="self-intro-meta-box">
+              <div class="self-meta-row">
+                <span class="self-meta-label">Presented by:</span>
+                <span class="self-meta-val">Dipesh (Dipesh Pantha)</span>
+              </div>
+              <div class="self-meta-row">
+                <span class="self-meta-label">Submitted to:</span>
+                <span class="self-meta-val">Ms. Bipana Sunar (English Teacher)</span>
+              </div>
+              <div class="self-meta-row">
+                <span class="self-meta-label">School:</span>
+                <span class="self-meta-val">Shree Nirmal Secondary School, Tanahun</span>
+              </div>
+              <div class="self-meta-row">
+                <span class="self-meta-label">Topic:</span>
+                <span class="self-meta-val" style="color: var(--pink-deep);">King Prithvi Narayan Shah & Nepal Unification</span>
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <button class="btn-primary touch-btn" onclick="window.presentationApp.nextSlide()">
+                🚀 Start Presentation ➔
+              </button>
+              <button class="btn-secondary touch-btn" onclick="window.presentationApp.goToSlide(12)">
+                🎮 Jump to Quiz
+              </button>
+            </div>
+          </div>
+
+          <!-- AUTHENTIC ABOUT.ME EMBED CARD (MATCHING DIPESH'S POWERPOINT) -->
+          <div style="display: flex; justify-content: center;">
+            <a href="https://about.me/dipeshpantha" target="_blank" rel="noopener noreferrer" class="about-me-embed-card" title="Click to view Dipesh Pantha on about.me">
+              <div class="about-me-photo-wrapper">
+                <img src="assets/dipesh_presenter.png" class="about-me-photo" alt="Dipesh Pantha">
+              </div>
+              <div class="about-me-info-bar">
+                <div class="about-me-name">Dipesh Pantha on about.me</div>
+                <div class="about-me-bio">I am a student, artist, and Digital Creator in Vyas 1, Damauli, Tanahun, Nepal.</div>
+                <div class="about-me-link-row">
+                  <span class="about-me-logo-badge">about.me</span>
+                  <span class="about-me-url">about.me/dipeshpantha ↗</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 1: TOPIC TITLE & HERO SLIDE
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-1">
+        <div class="hero-slide-content">
+          <div class="hero-text-col">
+            <div class="hero-pill-tag">
+              <span>👑</span>
+              <span>Historical Hero of Nepal</span>
+            </div>
+            <h1 class="hero-main-title">
+              King Prithvi<br>
+              <span>Narayan Shah</span>
+            </h1>
+            <p class="hero-description">
+              How a brave <strong>20-year-old king</strong> united more than 50 fighting kingdoms into <strong>one strong, beautiful Nepal</strong> (श्री ५ बडामहाराजाधिराज पृथ्वीनारायण शाह).
+            </p>
+            <div class="hero-actions">
+              <button class="btn-primary touch-btn" onclick="window.presentationApp.nextSlide()">
+                📖 Explore the Journey ➔
+              </button>
+            </div>
+          </div>
+          <div class="hero-image-col">
+            <div class="hero-image-frame">
+              <img src="assets/king_prithvi.jpg" alt="Statue of King Prithvi Narayan Shah at Chandragiri Hills" loading="eager">
+              <div class="hero-image-badge">
+                <div class="badge-flag">🇳🇵</div>
+                <div>
+                  <div class="badge-text">The Iconic ☝️ Pose</div>
+                  <div class="badge-sub">Chandragiri Hills (चन्द्रागिरि)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 2: FROM 50 KINGDOMS TO 1 NATION (REAL WIKIMEDIA PHOTOS!)
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-2">
+        <div class="slide-header">
+          <div class="slide-tag">📍 Slide 2 of 13 • The Big Picture</div>
+          <h2 class="slide-title">From 50 Kingdoms to 1 Country</h2>
+          <p class="slide-subtitle">
+            Imagine needing a passport and paying customs taxes just to walk from Pokhara to Kathmandu! (बाइसे र चौबिसे राज्य)
+          </p>
+        </div>
+
+        <div class="interactive-map-box" id="interactiveMapContainer">
+          <div class="map-status-pill">🗺️ 50+ Broken Kingdoms (Tap any real photo to view direct facts!):</div>
+          
+          <div class="kingdoms-grid">
+            <!-- Gorkha Kingdom (Real Photo) -->
+            <div class="image-kingdom-card" data-deepdive="gorkha">
+              <div class="kingdom-img-thumb" style="background-image: url('assets/gorkha_kingdom.jpg');"></div>
+              <div class="kingdom-card-body">
+                <div class="kingdom-name">Gorkha Kingdom (गोरखा)</div>
+                <div class="kingdom-barrier">Hill state of 20-yr-old King</div>
+                <div class="touch-deep-cue">👆 Direct Info</div>
+              </div>
+            </div>
+
+            <!-- Kantipur Palace (Real Photo from Wikimedia) -->
+            <div class="image-kingdom-card" data-deepdive="kantipur">
+              <div class="kingdom-img-thumb" style="background-image: url('assets/basantapur_real.jpg');"></div>
+              <div class="kingdom-card-body">
+                <div class="kingdom-name">Kantipur (कान्तिपुर)</div>
+                <div class="kingdom-barrier">🛂 Heavy trade customs tax</div>
+                <div class="touch-deep-cue">👆 Direct Info</div>
+              </div>
+            </div>
+
+            <!-- Lalitpur Patan (Real Photo from Wikimedia) -->
+            <div class="image-kingdom-card" data-deepdive="lalitpur">
+              <div class="kingdom-img-thumb" style="background-image: url('assets/patan_real.jpg');"></div>
+              <div class="kingdom-card-body">
+                <div class="kingdom-name">Lalitpur (पाटन)</div>
+                <div class="kingdom-barrier">🛂 Passport required</div>
+                <div class="touch-deep-cue">👆 Direct Info</div>
+              </div>
+            </div>
+
+            <!-- Bhaktapur Durbar (Real Photo from Wikimedia) -->
+            <div class="image-kingdom-card" data-deepdive="bhaktapur">
+              <div class="kingdom-img-thumb" style="background-image: url('assets/bhaktapur_real.jpg');"></div>
+              <div class="kingdom-card-body">
+                <div class="kingdom-name">Bhaktapur (भक्तपुर)</div>
+                <div class="kingdom-barrier">🛂 Constant fighting</div>
+                <div class="touch-deep-cue">👆 Direct Info</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: center; gap: 16px; margin-top: 20px; flex-wrap: wrap;">
+            <button class="btn-primary touch-btn" id="toggleUniteMapBtn">
+              ✨ Watch Nepal Unite (एक देश)
+            </button>
+            <button class="btn-secondary touch-btn" data-deepdive="baise-chaubise">
+              📜 Direct Facts on 50+ States (बाइसे र चौबिसे)
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 3: WHO WAS PRITHVI NARAYAN SHAH?
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-3">
+        <div class="slide-header">
+          <div class="slide-tag">📍 Slide 3 of 13 • Meet the King</div>
+          <h2 class="slide-title">Who Was King Prithvi Narayan Shah?</h2>
+          <p class="slide-subtitle">
+            Crowned King of Gorkha in 1799 BS (1743 AD) at just 20 years old! (१७९९ वि.सं. राज्याभिषेक)
+          </p>
+        </div>
+
+        <div class="split-content-grid">
+          <div class="statue-photo-card" data-deepdive="finger-pose" title="Tap to learn about the statue">
+            <img src="assets/king_prithvi.jpg" alt="King Prithvi Narayan Shah Statue with raised finger">
+            <div class="statue-caption">
+              <strong>Statue at Chandragiri Hills (चन्द्रागिरि)</strong><br>
+              Head, crown, and raised finger pointing to the sky! (Tap for Direct Info ➔)
+            </div>
+          </div>
+
+          <div class="interactive-body-quiz">
+            <h3 class="body-quiz-title">Class Question: What does the raised index finger mean?</h3>
+            <p class="body-quiz-sub">Tap the button you think is right:</p>
+
+            <div class="pose-options-list">
+              <button class="pose-quiz-btn" data-correct="false">
+                <span class="pose-option-badge">A</span>
+                <span>"I am the number one king!"</span>
+              </button>
+              <button class="pose-quiz-btn" data-correct="false">
+                <span class="pose-option-badge">B</span>
+                <span>"Look up at Mount Everest!"</span>
+              </button>
+              <button class="pose-quiz-btn" data-correct="true">
+                <span class="pose-option-badge">C</span>
+                <span>"One Unified Nation" (हामी सबै एक हौँ!)</span>
+              </button>
+            </div>
+
+            <div id="poseQuizResult" class="hidden"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 4: THE TURNING POINT: NUWAKOT (AUTHENTIC REAL IMAGES)
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-4">
+        <div class="slide-header">
+          <div class="slide-tag">📍 Slide 4 of 13 • 1801 BS (1744 AD)</div>
+          <h2 class="slide-title">The Turning Point: Victory at Nuwakot</h2>
+          <p class="slide-subtitle">
+            Nuwakot was the golden gate to Kathmandu Valley and controlled the rich trade route to Tibet (भोट).
+          </p>
+        </div>
+
+        <div class="trade-route-flow">
+          <div class="trade-step-card active" data-deepdive="nuwakot-fail">
+            <div class="trade-step-number">1</div>
+            <img src="assets/nuwakot_valley_fail.jpg" alt="First Try Failed" class="trade-step-img">
+            <h4 class="trade-step-title">First Try Failed</h4>
+            <p class="trade-step-desc">First attack in 1743 AD was defeated. Did he quit? Never!</p>
+            <div class="touch-deep-cue">Direct Info ➔</div>
+          </div>
+
+          <div class="trade-step-card" data-deepdive="banaras-trip">
+            <div class="trade-step-number">2</div>
+            <img src="assets/varanasi_real.jpg" alt="Trip to Banaras" class="trade-step-img">
+            <h4 class="trade-step-title">Trip to Banaras</h4>
+            <p class="trade-step-desc">Bought modern flintlock guns & hired skilled blacksmiths.</p>
+            <div class="touch-deep-cue">Direct Info ➔</div>
+          </div>
+
+          <div class="trade-step-card" data-deepdive="army-training">
+            <div class="trade-step-number">3</div>
+            <img src="assets/flintlock_musket.jpg" alt="Army Training" class="trade-step-img">
+            <h4 class="trade-step-title">Army Training</h4>
+            <p class="trade-step-desc">Trained army & appointed brave Kalu Pande (कालु पाण्डे) as Kaji.</p>
+            <div class="touch-deep-cue">Direct Info ➔</div>
+          </div>
+
+          <div class="trade-step-card" data-deepdive="nuwakot-win">
+            <div class="trade-step-number">4</div>
+            <img src="assets/nuwakot_palace_win.jpg" alt="Victory at Nuwakot" class="trade-step-img">
+            <h4 class="trade-step-title">Victory at Nuwakot</h4>
+            <p class="trade-step-desc">In 1801 BS, won Nuwakot fort & opened the valley trade door!</p>
+            <div class="touch-deep-cue">Direct Info ➔</div>
+          </div>
+        </div>
+
+        <div style="background: var(--bg-cream-soft); padding: 18px 24px; border-radius: var(--radius-lg); border-left: 4px solid var(--purple-vivid);">
+          <strong>Key Lesson:</strong> Failure is just practice for success! When he lost the first time, he learned and upgraded his gear.
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 5: NEVER GIVE UP: 3 BATTLES OF KIRTIPUR (REAL KALU PANDE PHOTO!)
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-5">
+        <div class="slide-header">
+          <div class="slide-tag">🛡️ Slide 5 of 13 • Grit & Patience</div>
+          <h2 class="slide-title">Never Give Up: The 3 Battles of Kirtipur</h2>
+          <p class="slide-subtitle">
+            Kirtipur sat high on steep rocky cliffs. Taking it was the hardest challenge of his life (कीर्तिपुरको लडाइँ).
+          </p>
+        </div>
+
+        <div class="kirtipur-stepper">
+          <button class="attempt-tab-btn active" data-target="attempt-1">
+            <span>Battle 1 (1814 BS)</span>
+          </button>
+          <button class="attempt-tab-btn" data-target="attempt-2">
+            <span>Battle 2 (1821 BS)</span>
+          </button>
+          <button class="attempt-tab-btn" data-target="attempt-3">
+            <span>Battle 3 (1822 BS)</span>
+          </button>
+        </div>
+
+        <div class="attempt-detail-card active" id="attempt-1">
+          <div>
+            <span class="attempt-tag-badge badge-defeat">First Defeat</span>
+            <h3 style="font-size: 1.6rem; margin-bottom: 8px;">Fall of Kalu Pande (कालु पाण्डे)</h3>
+            <p>
+              Fierce uphill battle. Brave Commander Kalu Pande died fighting. The King barely survived.
+            </p>
+          </div>
+          <!-- REAL PORTRAIT OF KALU PANDE FROM WIKIMEDIA COMMONS -->
+          <div style="text-align: center; background: #FFFFFF; padding: 18px; border-radius: var(--radius-xl); border: 2px solid var(--pink-main); cursor: pointer; max-width: 340px; margin: 0 auto;" data-deepdive="kalu-pande-shield">
+            <img src="assets/kalu_pande_real.jpg" alt="Commander Kalu Pande" style="width: 100%; height: 260px; object-fit: contain; border-radius: 12px; margin-bottom: 8px; background: #f9f5f0;">
+            <strong style="font-size: 1.05rem; color: var(--purple-deep);">Commander Kalu Pande (काजी कालु पाण्डे)</strong>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Chief General • Direct Info ➔</p>
+          </div>
+        </div>
+
+        <div class="attempt-detail-card" id="attempt-2">
+          <div>
+            <span class="attempt-tag-badge badge-defeat">Second Setback</span>
+            <h3 style="font-size: 1.6rem; margin-bottom: 8px;">Brother Wounded (सुरप्रताप शाह)</h3>
+            <p>
+              His brother Surpratap Shah lost an eye in battle. Gorkhalis retreated, but the King stayed determined.
+            </p>
+          </div>
+          <div style="text-align: center; background: #FFFFFF; padding: 18px; border-radius: var(--radius-xl); border: 2px solid var(--purple-light); max-width: 340px; margin: 0 auto; cursor: pointer;" data-deepdive="kirtipur-battle2">
+            <img src="assets/kirtipur_swords.jpg" alt="Kirtipur Battle Swords" style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px; margin-bottom: 8px;">
+            <strong style="font-size: 1.05rem; color: var(--purple-deep);">Kirtipur Battle Swords (कीर्तिपुर)</strong>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Historic battle weapons • Direct Info ➔</p>
+          </div>
+        </div>
+
+        <div class="attempt-detail-card" id="attempt-3">
+          <div>
+            <span class="attempt-tag-badge badge-victory">Patience & Victory</span>
+            <h3 style="font-size: 1.6rem; margin-bottom: 8px;">6-Month Blockade (आर्थिक नाकाबन्दी)</h3>
+            <p>
+              Surrounded the hill and stopped food and salt for 6 months. In 1822 BS, Kirtipur surrendered peacefully!
+            </p>
+          </div>
+          <div style="text-align: center; background: #ECFDF5; padding: 18px; border-radius: var(--radius-lg); cursor: pointer;" data-deepdive="kirtipur-battle3">
+            <img src="assets/kirtipur_real.jpg" alt="Kirtipur after surrender" style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px; margin-bottom: 8px;">
+            <strong style="color: #065F46; font-size: 1.05rem;">Victory Through Patience</strong>
+            <p style="font-size: 0.9rem; color: #047857; margin-top: 2px;">Smart tactics won without climbing. Direct Info ➔</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 6: MAKWANPUR GATEWAY & BENGAL ARMY (REAL CANNON PHOTO!)
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-6">
+        <div class="slide-header">
+          <div class="slide-tag">📍 Slide 6 of 13 • 1819 BS (1762 AD)</div>
+          <h2 class="slide-title">Makwanpur Gateway & Bengal Army Defeat</h2>
+          <p class="slide-subtitle">
+            Capturing the southern gateway fort and defeating General Gurgin Khan (मकवानपुर गढी विजय).
+          </p>
+        </div>
+
+        <div class="split-content-grid">
+          <div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Sealing the Southern Gateway</h3>
+            <p style="margin-bottom: 12px; font-size: 1.05rem;">
+              Makwanpur was the key trade door to India. Captured in 1819 BS (मकवानपुर गढी).
+            </p>
+            <p style="margin-bottom: 16px; font-size: 1.05rem;">
+              Bengal's Nawab sent General Gurgin Khan with cannons. Gorkhali warriors won in a fierce night battle!
+            </p>
+            <button class="btn-primary touch-btn" data-deepdive="makwanpur-gadhi">
+              Direct Makwanpur Facts ➔
+            </button>
+          </div>
+
+          <!-- REAL PHOTOGRAPH OF MAKWANPUR FORT & CANNON -->
+          <div style="background: #FFFFFF; border-radius: var(--radius-xl); padding: 18px; border: 2px solid var(--purple-main); text-align: center; cursor: pointer;" data-deepdive="makwanpur-gadhi">
+            <img src="assets/makwanpur_real.jpg" alt="Makwanpur Gadhi Fort" style="width: 100%; height: 240px; object-fit: cover; border-radius: 14px; margin-bottom: 10px;">
+            <h4 style="font-size: 1.25rem; color: var(--purple-deep); margin-bottom: 4px;">Makwanpur Fort (मकवानपुर गढी)</h4>
+            <p style="color: var(--text-body); font-size: 0.95rem;">
+              Southern hill fort & captured cannons • Direct Info ➔
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 7: BEATING THE BRITISH ARMY AT SINDHULI GADHI (REAL SINDHULI PHOTO!)
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-7">
+        <div class="slide-header">
+          <div class="slide-tag">📍 Slide 7 of 13 • 1824 BS (1767 AD)</div>
+          <h2 class="slide-title">Beating the British Empire at Sindhuli Gadhi</h2>
+          <p class="slide-subtitle">
+            Captain Kinloch brought 2,400 trained British East India Company soldiers with muskets (सिन्धुली गढी).
+          </p>
+        </div>
+
+        <div class="ambush-interactive-container">
+          <div class="ambush-visual-card">
+            <!-- REAL SINDHULI GADHI PHOTO -->
+            <img src="assets/sindhuli_real.jpg" alt="Sindhuli Gadhi Fort" style="width: 100%; height: 200px; object-fit: cover; border-radius: 14px; margin-bottom: 14px;">
+            <h3 style="margin-bottom: 8px;">The Secret Mountain Trap!</h3>
+            <p style="font-size: 1.05rem; margin-bottom: 18px;">
+              Gorkhali warriors ambushed British troops with <strong>wild hornet hives (भिर मौरी)</strong>!
+            </p>
+            <button class="btn-primary touch-btn" id="triggerHornetBtn">
+              Release Hornet Swarm!
+            </button>
+          </div>
+
+          <div id="ambushResultBox" class="hidden" style="background: #FFFFFF; border: 2px solid var(--purple-main); border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-glow);">
+            <div style="font-size: 1.8rem; margin-bottom: 6px; font-weight: 800; color: #065F46;">Total Victory!</div>
+            <h4 style="font-size: 1.25rem; color: var(--purple-deep); margin-bottom: 8px;">British Troops Retreated!</h4>
+            <p style="margin-bottom: 12px; font-size: 1rem;">
+              Captain Kinloch's 2,400 soldiers fled back to India.
+            </p>
+            <div style="background: var(--bg-cream-soft); padding: 14px; border-radius: var(--radius-md); font-weight: 700; color: #065F46; cursor: pointer;" data-deepdive="sindhuli-gadhi">
+              Captured <strong>500+ British rifles (बन्दुक)</strong> to defend Nepal! Direct Info ➔
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 8: TAKING KATHMANDU PEACEFULLY: INDRA JATRA (REAL KUMARI PHOTO!)
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-8">
+        <div class="slide-header">
+          <div class="slide-tag">📍 Slide 8 of 13 • 1825 BS (Sept 25, 1768 AD)</div>
+          <h2 class="slide-title">Taking Kathmandu During Indra Jatra</h2>
+          <p class="slide-subtitle">
+            Entering the capital city without hurting people or destroying temples (इन्द्रजात्रामा कान्तिपुर).
+          </p>
+        </div>
+
+        <div class="indra-jatra-stage">
+          <div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Festival Night in Basantapur</h3>
+            <p style="margin-bottom: 12px; font-size: 1.05rem;">
+              During the Indra Jatra chariot festival (रथयात्रा), Gorkhalis entered Kathmandu peacefully.
+            </p>
+            <p style="margin-bottom: 16px; font-size: 1.05rem;">
+              King Prithvi went directly to <strong>Kumari Ghar (कुमारी घर)</strong> and received the sacred Royal Tika.
+            </p>
+            <button class="btn-primary touch-btn" id="triggerTikaBtn">
+              Receive Kumari's Tika Blessing
+            </button>
+          </div>
+
+          <!-- REAL PHOTOGRAPH OF LIVING GODDESS KUMARI -->
+          <div class="tika-blessing-box" id="tikaResultBox" data-deepdive="kumari-tika" style="cursor: pointer; padding: 20px;" title="Tap to learn direct details">
+            <img src="assets/kumari_real.jpg" alt="Living Goddess Kumari" style="width: 100%; height: 260px; object-fit: contain; border-radius: 14px; margin-bottom: 8px;">
+            <div class="blessing-forehead-tika"></div>
+            <h3 style="color: #991B1B; margin-bottom: 4px;">Living Goddess Kumari (श्री कुमारी)</h3>
+            <p style="font-size: 0.95rem; color: var(--text-dark);">
+              Placed the Royal Tika on his forehead as legitimate ruler. Direct Info ➔
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 9: FALL OF PATAN & BHAKTAPUR: CAPITAL BORN (REAL BASANTAPUR PHOTO!)
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-9">
+        <div class="slide-header">
+          <div class="slide-tag">📍 Slide 9 of 13 • 1825-1826 BS (1768-1769 AD)</div>
+          <h2 class="slide-title">Unification of the Valley: Capital Born</h2>
+          <p class="slide-subtitle">
+            Ending 600 years of Malla dynasty and declaring Kathmandu modern capital (उपत्यका एकीकरण).
+          </p>
+        </div>
+
+        <div class="split-content-grid">
+          <div style="background: #FFFFFF; border-radius: var(--radius-xl); padding: 22px; border: 2px solid var(--pink-light); cursor: pointer;" data-deepdive="valley-bhaktapur">
+            <img src="assets/bhaktapur_real.jpg" alt="Bhaktapur 55-Window Palace" style="width: 100%; height: 180px; object-fit: cover; border-radius: 14px; margin-bottom: 12px;">
+            <h3 style="font-size: 1.35rem; color: var(--text-dark); margin-bottom: 8px;">Fall of Bhaktapur (१८२६ वि.सं.)</h3>
+            <p style="margin-bottom: 10px; font-size: 1rem;">
+              Patan joined peacefully. In 1826 BS, Bhaktapur united after King Ranajit Malla retired with full honors.
+            </p>
+            <div class="touch-deep-cue">Direct Facts ➔</div>
+          </div>
+
+          <!-- REAL BASANTAPUR DURBAR SQUARE PHOTO -->
+          <div style="background: #FFFFFF; border-radius: var(--radius-xl); padding: 18px; border: 2px solid var(--purple-main); text-align: center; cursor: pointer;" data-deepdive="valley-capital">
+            <img src="assets/basantapur_real.jpg" alt="Kathmandu Basantapur Durbar" style="width: 100%; height: 220px; object-fit: cover; border-radius: 14px; margin-bottom: 10px;">
+            <h3 style="font-size: 1.3rem; color: var(--purple-deep); margin-bottom: 4px;">Kathmandu: Capital of Nepal</h3>
+            <p style="color: var(--text-dark); font-size: 0.95rem;">
+              Declared permanent capital of Modern Nepal (राजधानी). Direct Info ➔
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 10: HIS GOLDEN ADVICE: DIVYA UPADESH
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-10">
+        <div class="slide-header">
+          <div class="slide-tag">📍 Slide 10 of 13 • 1831 BS (1775 AD)</div>
+          <h2 class="slide-title">His Golden Teachings: Divya Upadesh</h2>
+          <p class="slide-subtitle">
+            Before passing away at age 52 at Devighat Nuwakot, he gave timeless advice (दिव्य उपदेश).
+          </p>
+        </div>
+
+        <div class="divya-cards-grid">
+          <div class="divya-card" data-deepdive="divya-yam">
+            <img src="assets/himalayas_real.jpg" alt="Nepal Himalayas between India and China" style="width: 100%; height: 120px; object-fit: cover; border-radius: 12px;">
+            <div class="divya-card-nepali">"नेपाल दुई ढुङ्गाबीचको तरुल हो"</div>
+            <div class="divya-card-english">
+              <strong>"A yam between two boulders"</strong><br>
+              Maintain friendship and balance with China and India.
+            </div>
+            <div class="touch-deep-cue">Direct Info ➔</div>
+          </div>
+
+          <div class="divya-card" data-deepdive="divya-garden">
+            <img src="assets/nepal_culture_real.jpg" alt="Nepal cultural diversity" style="width: 100%; height: 120px; object-fit: cover; border-radius: 12px;">
+            <div class="divya-card-nepali">"सबै जातको साझा फूलबारी"</div>
+            <div class="divya-card-english">
+              <strong>"A common flower garden"</strong><br>
+              Every culture and caste makes one beautiful garden.
+            </div>
+            <div class="touch-deep-cue">Direct Info ➔</div>
+          </div>
+
+          <div class="divya-card" data-deepdive="divya-swadeshi">
+            <img src="assets/dhaka_topi_real.jpg" alt="Nepali Dhaka topi cloth" style="width: 100%; height: 120px; object-fit: cover; border-radius: 12px;">
+            <div class="divya-card-nepali">"स्वदेशी सामान प्रयोग गरौँ"</div>
+            <div class="divya-card-english">
+              <strong>"Support Local Goods"</strong><br>
+              Wear Nepali cloth and keep money inside the country.
+            </div>
+            <div class="touch-deep-cue">Direct Info ➔</div>
+          </div>
+        </div>
+
+        <!-- Classroom Live Poll -->
+        <div class="class-poll-section">
+          <div class="poll-question">Class Poll: Which teaching is most important for Nepal today?</div>
+          
+          <div class="poll-options-grid">
+            <button class="poll-vote-btn" onclick="window.pollManager.vote('yam')">
+              <strong>1. Balance with Neighbors</strong>
+              <div class="poll-bar-wrapper">
+                <div class="poll-bar-fill" id="pollBarYam" style="width: 0%;"></div>
+              </div>
+              <span id="pollValYam" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; display: block;">0 votes (0%)</span>
+            </button>
+
+            <button class="poll-vote-btn" onclick="window.pollManager.vote('garden')">
+              <strong>2. Unity & Inclusion</strong>
+              <div class="poll-bar-wrapper">
+                <div class="poll-bar-fill" id="pollBarGarden" style="width: 0%;"></div>
+              </div>
+              <span id="pollValGarden" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; display: block;">0 votes (0%)</span>
+            </button>
+
+            <button class="poll-vote-btn" onclick="window.pollManager.vote('economy')">
+              <strong>3. Support Local Goods</strong>
+              <div class="poll-bar-wrapper">
+                <div class="poll-bar-fill" id="pollBarEcon" style="width: 0%;"></div>
+              </div>
+              <span id="pollValEcon" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; display: block;">0 votes (0%)</span>
+            </button>
+          </div>
+
+          <div id="pollResultNotice" class="hidden" style="color: #065F46; font-weight: 700; text-align: center; margin-top: 10px;"></div>
+
+          <div style="text-align: center; margin-top: 12px;">
+            <button class="btn-secondary touch-btn" onclick="window.pollManager.reset()" style="padding: 6px 16px; font-size: 0.85rem;">
+              Reset Votes
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 11: CREATIVE CHART PAPER TIMELINE
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-11">
+        <div class="slide-header">
+          <div class="slide-tag">📍 Slide 11 of 13 • Chart Paper Companion</div>
+          <h2 class="slide-title">Creative Chart Paper Timeline</h2>
+          <p class="slide-subtitle">
+            3 creative ways to display the timeline on your chart paper:
+          </p>
+        </div>
+
+        <div class="chart-switch-tabs">
+          <button class="chart-view-tab active" data-view="mountain">
+            1. Mountain Path (पहाडी पदमार्ग)
+          </button>
+          <button class="chart-view-tab" data-view="shields">
+            2. 7 Flip Shields (छर्मा ढाल)
+          </button>
+          <button class="chart-view-tab" data-view="khukuri">
+            3. Khukuri Timeline (खुकुरीको ढाड)
+          </button>
+        </div>
+
+        <!-- Panel 1: Mountain Path -->
+        <div class="chart-view-panel active" id="chartPanel-mountain">
+          <h3 style="margin-bottom: 6px;">"Stepping Stones to Kathmandu" Trail</h3>
+          <p style="color: var(--text-muted); margin-bottom: 16px;">
+            A climbing trail from Gorkha Hill to Basantapur Kathmandu.
+          </p>
+
+          <div class="stepping-stones-trail">
+            <div class="trail-line"></div>
+            
+            <div class="stone-node" data-deepdive="gorkha" style="cursor: pointer;">
+              <div class="stone-year">1799 BS</div>
+              <div class="stone-title">Crowned King</div>
+            </div>
+            <div class="stone-node" data-deepdive="nuwakot-win" style="cursor: pointer;">
+              <div class="stone-year">1801 BS</div>
+              <div class="stone-title">Won Nuwakot</div>
+            </div>
+            <div class="stone-node" data-deepdive="kalu-pande-shield" style="cursor: pointer;">
+              <div class="stone-year">1814-22 BS</div>
+              <div class="stone-title">Kirtipur Battle</div>
+            </div>
+            <div class="stone-node" data-deepdive="sindhuli-gadhi" style="cursor: pointer;">
+              <div class="stone-year">1824 BS</div>
+              <div class="stone-title">Beat British</div>
+            </div>
+            <div class="stone-node" data-deepdive="kumari-tika" style="cursor: pointer;">
+              <div class="stone-year">1825 BS</div>
+              <div class="stone-title">Kathmandu Won</div>
+            </div>
+            <div class="stone-node" data-deepdive="divya-yam" style="cursor: pointer;">
+              <div class="stone-year">1831 BS</div>
+              <div class="stone-title">Divya Upadesh</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: 7 Flip-Flap Shields -->
+        <div class="chart-view-panel" id="chartPanel-shields">
+          <h3 style="margin-bottom: 6px;">7 Traditional Flip Shields</h3>
+          <p style="color: var(--text-muted); margin-bottom: 16px;">
+            Tap any shield to flip and reveal the event underneath:
+          </p>
+
+          <div class="shields-grid">
+            <div class="shield-container" onclick="window.presentationApp.flipShield(this)">
+              <div class="shield-card-inner">
+                <div class="shield-front">
+                  <div class="shield-front-year">1799 BS</div>
+                  <div style="font-size: 0.85rem; color: var(--pink-deep); font-weight: 700; margin-top: 10px;">Tap to Flip ➔</div>
+                </div>
+                <div class="shield-back">
+                  <div class="shield-back-title">Throne of Gorkha</div>
+                  <p class="shield-back-desc">Crowned King at age 20 in Gorkha.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="shield-container" onclick="window.presentationApp.flipShield(this)">
+              <div class="shield-card-inner">
+                <div class="shield-front">
+                  <div class="shield-front-year">1801 BS</div>
+                  <div style="font-size: 0.85rem; color: var(--pink-deep); font-weight: 700; margin-top: 10px;">Tap to Flip ➔</div>
+                </div>
+                <div class="shield-back">
+                  <div class="shield-back-title">Nuwakot Fort</div>
+                  <p class="shield-back-desc">Won Nuwakot fort; opened trade door.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="shield-container" onclick="window.presentationApp.flipShield(this)">
+              <div class="shield-card-inner">
+                <div class="shield-front">
+                  <div class="shield-front-year">1814-22 BS</div>
+                  <div style="font-size: 0.85rem; color: var(--pink-deep); font-weight: 700; margin-top: 10px;">Tap to Flip ➔</div>
+                </div>
+                <div class="shield-back">
+                  <div class="shield-back-title">Kirtipur Sieges</div>
+                  <p class="shield-back-desc">Patient blockade won the hill fort.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="shield-container" onclick="window.presentationApp.flipShield(this)">
+              <div class="shield-card-inner">
+                <div class="shield-front">
+                  <div class="shield-front-year">1824 BS</div>
+                  <div style="font-size: 0.85rem; color: var(--pink-deep); font-weight: 700; margin-top: 10px;">Tap to Flip ➔</div>
+                </div>
+                <div class="shield-back">
+                  <div class="shield-back-title">Sindhuli Gadhi</div>
+                  <p class="shield-back-desc">Defeated British troops with hornets.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="shield-container" onclick="window.presentationApp.flipShield(this)">
+              <div class="shield-card-inner">
+                <div class="shield-front">
+                  <div class="shield-front-year">1825 BS</div>
+                  <div style="font-size: 0.85rem; color: var(--pink-deep); font-weight: 700; margin-top: 10px;">Tap to Flip ➔</div>
+                </div>
+                <div class="shield-back">
+                  <div class="shield-back-title">Indra Jatra</div>
+                  <p class="shield-back-desc">Peaceful entry; received Kumari's Tika.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="shield-container" onclick="window.presentationApp.flipShield(this)">
+              <div class="shield-card-inner">
+                <div class="shield-front">
+                  <div class="shield-front-year">1826 BS</div>
+                  <div style="font-size: 0.85rem; color: var(--pink-deep); font-weight: 700; margin-top: 10px;">Tap to Flip ➔</div>
+                </div>
+                <div class="shield-back">
+                  <div class="shield-back-title">Valley Capital</div>
+                  <p class="shield-back-desc">Kathmandu made national capital.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="shield-container" onclick="window.presentationApp.flipShield(this)">
+              <div class="shield-card-inner">
+                <div class="shield-front">
+                  <div class="shield-front-year">1831 BS</div>
+                  <div style="font-size: 0.85rem; color: var(--pink-deep); font-weight: 700; margin-top: 10px;">Tap to Flip ➔</div>
+                </div>
+                <div class="shield-back">
+                  <div class="shield-back-title">Divya Upadesh</div>
+                  <p class="shield-back-desc">Final advice on foreign policy & unity.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Khukuri Spine -->
+        <div class="chart-view-panel" id="chartPanel-khukuri">
+          <h3 style="margin-bottom: 6px;">The Khukuri Blade Spine (खुकुरीको ढाड)</h3>
+          <p style="color: var(--text-muted); margin-bottom: 16px;">
+            The curve of the Khukuri blade serves as the timeline axis from handle to tip.
+          </p>
+
+          <div style="background: linear-gradient(135deg, #FFF0F5 0%, #F5ECFA 100%); border-radius: var(--radius-xl); padding: 24px; text-align: center; border: 2px dashed var(--pink-main);">
+            <img src="assets/khukuri_real.jpg" alt="Traditional Nepali Khukuri" style="height: 100px; width: auto; object-fit: contain; margin-bottom: 12px;">
+            <div style="font-size: 1.3rem; font-weight: 800; color: var(--text-dark); margin-bottom: 10px;">
+              From Handle to Sharp Tip
+            </div>
+            <p style="max-width: 600px; margin: 0 auto; color: var(--text-body); font-size: 1rem; line-height: 1.6;">
+              <strong>Handle (1799 BS):</strong> Crowned King in Gorkha.<br>
+              <strong>Blade Curve (1814-1824 BS):</strong> Kirtipur grit & Sindhuli victory.<br>
+              <strong>Sharp Tip (1825-1831 BS):</strong> Capital in Kathmandu & Divya Upadesh.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 12: CLASSROOM QUIZ GAME
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-12">
+        <div class="slide-header">
+          <div class="slide-tag">📍 Slide 12 of 13 • Classroom Quiz</div>
+          <h2 class="slide-title">Interactive Classroom Quiz</h2>
+          <p class="slide-subtitle">
+            Tap the right answers on the screen:
+          </p>
+        </div>
+
+        <div id="quizWidget"></div>
+      </section>
+
+      <!-- ==========================================
+           SLIDE 13: CONCLUSION & QUESTIONS
+           ========================================== -->
+      <section class="slide-card glassmorphism" id="slide-13">
+        <div class="slide-header">
+          <div class="slide-tag">✨ Slide 13 of 13 • Conclusion</div>
+          <h2 class="slide-title">Thank You! Any Questions? (धन्यवाद)</h2>
+          <p class="slide-subtitle">
+            Presented by Dipesh • Shree Nirmal Secondary School, Tanahun • English Class Presentation
+          </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 26px 0;">
+          <div style="background: #FFFFFF; border-radius: var(--radius-xl); padding: 20px; text-align: center; border: 2px solid var(--pink-light);">
+            <img src="assets/king_prithvi.jpg" alt="King Prithvi Narayan Shah" style="width: 100%; height: 120px; object-fit: contain; border-radius: 12px; margin-bottom: 8px; background: #f9f5f0;">
+            <h4 style="font-size: 1.25rem; margin-bottom: 6px;">Big Vision</h4>
+            <p style="font-size: 0.95rem; color: var(--text-muted);">He saw beyond tiny borders and united 50 kingdoms into one home.</p>
+          </div>
+
+          <div style="background: #FFFFFF; border-radius: var(--radius-xl); padding: 20px; text-align: center; border: 2px solid var(--purple-light);">
+            <img src="assets/kirtipur_swords.jpg" alt="Kirtipur battle swords" style="width: 100%; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 8px;">
+            <h4 style="font-size: 1.25rem; margin-bottom: 6px;">Unstoppable Grit</h4>
+            <p style="font-size: 0.95rem; color: var(--text-muted);">He suffered big defeats, but always learned, adapted, and tried again.</p>
+          </div>
+
+          <div style="background: #FFFFFF; border-radius: var(--radius-xl); padding: 20px; text-align: center; border: 2px solid var(--pink-light);">
+            <img src="assets/nepal_culture_real.jpg" alt="Nepal cultural unity" style="width: 100%; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 8px;">
+            <h4 style="font-size: 1.25rem; margin-bottom: 6px;">National Unity</h4>
+            <p style="font-size: 0.95rem; color: var(--text-muted);">"A common garden of all castes" — unity remains Nepal's greatest superpower.</p>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+          <button class="btn-primary touch-btn" onclick="window.presentationApp.goToSlide(0)">
+            🔄 Return to Self Introduction
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Bottom Presentation Navigation Dock -->
+  <footer class="bottom-presentation-dock glassmorphism">
+    <button class="nav-dock-btn" id="prevSlideBtn">
+      ◀ Previous
+    </button>
+
+    <div class="slide-dots-center">
+      <div id="slideDotsTrack" style="display: flex; gap: 8px;"></div>
+      <div class="slide-counter-pill">
+        Slide <span id="currentSlideNumber">1</span> of <span id="totalSlidesNumber">14</span>
+      </div>
+    </div>
+
+    <button class="nav-dock-btn" id="nextSlideBtn">
+      Next Slide ▶
+    </button>
+  </footer>
+
+  <!-- Bottom Global Progress Line -->
+  <div class="bottom-global-progress">
+    <div class="progress-fill" id="presentationProgressBar"></div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/audio.js"></script>
+  <script src="js/deepdive.js"></script>
+  <script src="js/draw.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
